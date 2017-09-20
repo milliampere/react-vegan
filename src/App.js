@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import firebase from './firebase';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+import Products from './components/Products';
 
 class App extends Component {
 
   state = {
     authenticated: false,
-    user: {}
+    user: {}  
   }
 
   componentDidMount(){
@@ -20,6 +21,8 @@ class App extends Component {
         this.setState({authenticated: false});
       }
     })
+
+    
   }
 
   //Function gets called in LoginForm but state is being set in App
@@ -27,7 +30,6 @@ class App extends Component {
     this.setState({ user: userFromLoginForm })
     this.setState({authenticated: true});
   }
-
  
 
   render() {
@@ -50,6 +52,8 @@ class App extends Component {
       <div className="App">
         <Navbar authenticated={this.state.authenticated} signOut={this.signOut} email={this.state.user.email} user={this.state.user} />
         <main style={{maxWidth: "70%", margin: "3rem auto"}}>
+
+        <Products />
 
         <Login onSignIn={this.onSignIn} />
         <p>{ this.state.user && this.state.user.email }</p>

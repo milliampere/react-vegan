@@ -68,7 +68,7 @@ class Login extends Component{
             <input type="password" className="pt-input" name="password" onChange={this.onChange} 
             value={this.state.password} placeholder="Lösenord" style={{width: "100%"}}  />
             </label>
-          <input type="submit" className="pt-button pt-intent-primary" value="Logga in" style={{width: "100%"}} />
+          <input type="submit" className="pt-button pt-intent-primary" value="Logga in med e-post" style={{width: "100%"}} />
         </form>
 
       </div>
