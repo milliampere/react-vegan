@@ -1,0 +1,94 @@
+
+
+users
+  namn      info   typ          bokadePass        reserveradePass      instruktörspass
+  Camilla   {@}    {admin}      {pass.id = true}  {pass.id = true}      
+  Joanna    {@}    {instruktör}                                          {pass.id = true}
+  Annelie   {@}    {medlem}     {pass.id = true}  {pass.id = true}
+
+
+pass
+  namn  antalPlatser inbokadeMedlemmar    reserver    längd  start             stopp                instruktör
+  Yoga  20           {users.id,users.id}  {users.id}  90     2017-09-25 19.00  2017-09-25 20.30     users.id
+
+
+1.
+  firebase.database().ref('user/id/bokadePass').push('pass.id');
+  firebase.database().ref('pass/id/inbokadeMedlemmar').push(users.id);
+  
+
+2.
+firebase.database().ref('pass/id/inbokadeMedlemmar'); 
+const list = this.state.users.map(user => 
+  <li key={user.key}>user.name</li>
+)
+
+3.
+firebase.database().ref('pass')
+  .orderByChild('start')
+  .limitToFirst(10)
+  .once('value', (snapshot) => {
+  })
+
+
+
+
+
+GENOMGÅNG
+{
+  "users":{
+    "id": "32r3993",
+    "isAdmin": true,
+    "isInstructor": true,
+    "bookings": {
+      "2434i23n4" : true
+    }
+  }
+  "admins" : {
+    32r3993: true
+  }
+  "instructors" : {
+    "92n2jn" : true
+    "32r3993" : true
+  }
+}
+
+// Ta ut admins, långa vägen, då måste vi hämta alla users och loopa igenom med js.
+firebase.database().ref('users').once('value');
+
+// Snabbare
+firebase.database().ref('admins').once('value');
+
+Kolla om värdet finns i objektet med in-operatorn som returnerar true eller false
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in
+
+
+
+Eftermiddag: strukturera projektdatabas
+Projekt
+
+{
+  "users":{
+    "id": "32r3993",
+    "name": "Camilla",
+    "isAdmin": true,
+    "recipes": {
+      "2434i23n4" : true
+    }
+    "likes"
+  }
+  "admins" : {
+    32r3993: true
+  }
+  "recipes" : {
+    "id" : "2434i23n4",
+    "description" : "Gott gott",
+    "ingredients": {"potatis", }
+    "likedBy": {users.id...}
+  }
+  "comments" : {
+    "id": "3735hu3h5u3",
+    "text": "Bra recept!"
+    "author": "32r3993"
+  }
+}

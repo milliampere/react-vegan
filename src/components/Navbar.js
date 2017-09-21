@@ -1,15 +1,22 @@
 import React from 'react';
 import firebase from '../firebase';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom';
+import Login from './Login';
 
 function Navbar(props){
 
-  if(!(Object.keys(props.user).length === 0)){
+  //FOR TESTING
+/*   if(!(Object.keys(props.user).length === 0)){
     console.table([{
       "Navbar.js": '',
       "this.state.user": props.user,
       "authenticated": props.authenticated
     }])
-  }
+  } */
 
 
   let profilePhoto;
@@ -21,7 +28,6 @@ function Navbar(props){
 
 
   return(
-
     <nav className="pt-navbar">
       <div className="pt-navbar-group pt-align-left">
         <div className="pt-navbar-heading">Vegan</div>
@@ -30,7 +36,9 @@ function Navbar(props){
       <div className="pt-navbar-group pt-align-right">
         {props.authenticated
           ?  <div><button className="pt-button pt-minimal pt-icon-home">Home</button>
-        <button className="pt-button pt-minimal pt-icon-document">Files</button>
+          <button className="pt-button pt-minimal pt-icon-add-to-artifact">Add recipe</button>
+        <button className="pt-button pt-minimal pt-icon-document">My recipes</button>
+        <button className="pt-button pt-minimal pt-icon-bookmark">Saved</button>
         <span className="pt-navbar-divider"></span>
         <button className="pt-button pt-minimal pt-icon-user"></button>
         <button className="pt-button pt-minimal pt-icon-notifications"></button>
@@ -49,10 +57,22 @@ function Navbar(props){
 
         {props.authenticated
           ? <button onClick={signOut} className="pt-button pt-intent-primary"> Logga ut </button>
-          : <button onClick={props.signIn} className="pt-button pt-intent-primary"> Registrera/Logga in </button>
+          :  <Router>
+                <div>
+                  <Link to="/login">Login</Link>
+                  <Route path="/login" render={LoginRoute} />
+                  <button onClick={props.signIn} className="pt-button pt-intent-primary"> Registrera/Logga in </button>
+                </div>
+            </Router>
+          
         }
       </div>
+
+
+
+
     </nav>
+
   )}
 
 export default Navbar;
@@ -65,3 +85,14 @@ let signOut = () => {
     // An error happened.
   });
 } 
+
+
+
+
+const LoginRoute = (props) => {
+  return (
+    <Login {...props} 
+      onSignIn={this.onSignIn}
+    />
+  );
+}

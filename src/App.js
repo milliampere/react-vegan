@@ -2,7 +2,14 @@ import React, { Component } from 'react';
 import firebase from './firebase';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
+//import Recipes from './components/Recipes';
 import Products from './components/Products';
+
+/* import {
+  BrowserRouter as Router,
+  Route,
+  Link
+} from 'react-router-dom'; */
 
 class App extends Component {
 
@@ -35,7 +42,7 @@ class App extends Component {
   render() {
 
     // FOR TESTING
-    console.log("Render App.js");
+/*     console.log("Render App.js");
     if(firebase.auth().currentUser || !(Object.keys(this.state.user).length === 0)){
         console.table([{
           "App.js": '',
@@ -46,12 +53,15 @@ class App extends Component {
     }
     else{
       console.log("Both firebase.auth().currentUser and this.state.user is empty");
-    }
+    } */
 
     return (
       <div className="App">
         <Navbar authenticated={this.state.authenticated} signOut={this.signOut} email={this.state.user.email} user={this.state.user} />
         <main style={{maxWidth: "70%", margin: "3rem auto"}}>
+
+        {/* <Recipes /> */}
+
 
         <Products />
 
@@ -68,3 +78,5 @@ class App extends Component {
 }
 
 export default App;
+
+
