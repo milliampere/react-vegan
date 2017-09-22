@@ -28,6 +28,10 @@ class Login extends Component{
       password: this.state.password
     }])
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+/*     .then((user) => {
+      firebase.database().ref(`users`)
+      .push({email: user.email, uid: user.uid, name: this.state.name })
+    }) */
     .catch(error => console.log(error));
   }
 

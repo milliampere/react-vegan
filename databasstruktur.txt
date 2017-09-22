@@ -83,7 +83,7 @@ Projekt
   "recipes" : {
     "id" : "2434i23n4",
     "description" : "Gott gott",
-    "ingredients": {"potatis", }
+    "ingredients": {{"potatis, id=32"}, }
     "likedBy": {users.id...}
   }
   "comments" : {

@@ -6,6 +6,7 @@ import {
   Link
 } from 'react-router-dom';
 import Login from './Login';
+import logo from '../images/logo.svg';
 
 function Navbar(props){
 
@@ -26,21 +27,28 @@ function Navbar(props){
     profilePhoto = <span className="pt-icon-standard pt-icon-user" />;
   }
 
+  // Send click to App.js
+  function clickInNavbar(fromNavbar){
+    props.onNavbarClick(fromNavbar);
+  }
 
   return(
     <nav className="pt-navbar">
       <div className="pt-navbar-group pt-align-left">
-        <div className="pt-navbar-heading">Vegan</div>
-        <input className="pt-input" placeholder="Search files..." type="text" />
+        <div className="pt-navbar-heading"><img src={logo} className="logo" alt="Vegan" /></div>
+        {props.authenticated && 
+          <div>
+            <span className="pt-navbar-divider"></span>
+            <button className="pt-button pt-minimal pt-icon-add-to-artifact" onClick={() => clickInNavbar("Lägg till recept")}>Lägg till recept</button>
+            <button className="pt-button pt-minimal pt-icon-document" onClick={() => clickInNavbar("Mina recept")}>Mina recept</button>
+            <button className="pt-button pt-minimal pt-icon-bookmark" onClick={() => clickInNavbar("Favoriter")}>Favoriter</button>
+          </div>
+        }
       </div>
       <div className="pt-navbar-group pt-align-right">
         {props.authenticated
-          ?  <div><button className="pt-button pt-minimal pt-icon-home">Home</button>
-          <button className="pt-button pt-minimal pt-icon-add-to-artifact">Add recipe</button>
-        <button className="pt-button pt-minimal pt-icon-document">My recipes</button>
-        <button className="pt-button pt-minimal pt-icon-bookmark">Saved</button>
-        <span className="pt-navbar-divider"></span>
-        <button className="pt-button pt-minimal pt-icon-user"></button>
+          ?  <div>
+        <button className="pt-button pt-minimal pt-icon-user" onClick={() => clickInNavbar("Profile")}></button>
         <button className="pt-button pt-minimal pt-icon-notifications"></button>
         <button className="pt-button pt-minimal pt-icon-cog"></button>
         <span className="pt-navbar-divider"></span>

@@ -1,24 +1,14 @@
-.App {
-  text-align: center;
+.ingredientResult tbody tr:hover {
+  background-color: rgb(244, 242, 254);
+  cursor: pointer;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+@keyframes logo-spin {
+  from { transform: rotateZ(-10deg); }
+  to { transform: rotateZ(10deg); }
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
-  color: white;
-}
-
-.App-intro {
-  font-size: large;
-}
-
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.logo {
+  /* animation: logo-spin 1s linear 2s infinite alternate; */
+  height: 20px;
 }
