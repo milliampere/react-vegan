@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import firebase from '../firebase';
-import ListIngredientsFromSearch from './ingredients/ListIngredientsFromSearch';
+import firebase from '../../firebase';
+import ListIngredientsFromSearch from './ListIngredientsFromSearch';
+import DisplayChoosenIngredients from './DisplayChoosenIngredients';
 
 class Ingredients extends Component {
 
@@ -70,40 +71,9 @@ class Ingredients extends Component {
 
   render() {
     return (
-      <div className="Products">
+      <div className="Ingredients">
         
-      { this.state.ingredentsInput.length > 0 && 
-      <table className="pt-table pt-condensed">
-        <thead>
-          <tr>
-            <td>Mängd</td>
-            <td>Mått</td>
-            <td>Ingrediens</td>
-          </tr>
-        </thead>
-        <tbody>
-        {this.state.ingredentsInput.map(item => {
-          return (
-            <tr key={item.key}>
-              <td style={{width: "10%"}}><input type="text" style={{width: "5em"}} /></td>
-              <td>
-                <div className="pt-select pt-inline">
-                  <select>
-                    <option defaultValue>liter</option>
-                    <option value="1">dl</option>
-                    <option value="2">msk</option>
-                    <option value="3">tsk</option>
-                    <option value="4">st</option>
-                  </select>
-                </div>
-              </td>
-              <td style={{width: "60%"}}>{item.value.Namn}</td>
-              <td><span className="pt-icon pt-icon-cross" onClick={()=>{this.removeInputIngredient(item.key)}} /></td>
-            </tr>)
-        })}
-        </tbody>
-      </table>
-      }
+<DisplayChoosenIngredients ingredentsInput={this.state.ingredentsInput} removeInputIngredient={this.removeInputIngredient}/>
 
 
         <div className="pt-control-group">
@@ -114,7 +84,7 @@ class Ingredients extends Component {
           <button className="pt-button pt-intent-primary">Sök</button>
         </div>
 
-
+        
       {this.state.productInput.length > 0 && <ListIngredientsFromSearch array={this.state.productSearch} onChange={this.onChange} onChooseIngredient={this.onChooseIngredient} />}
       
 

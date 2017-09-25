@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import firebase from '../firebase';
-
+/* import AddRecipeFromText from './recipes/AddRecipeFromText'; */
+import AddRecipe from './recipes/AddRecipe';
 
 class Recipes extends Component {
 
   state = {
-    recipes: [],
-    nameInput: '',
-    descriptionInput: '', 
-    timeInput: '',
-    numberOfPeopleInput: ''    
+    recipes: []
   }
 
   componentDidMount(){
@@ -39,7 +36,10 @@ class Recipes extends Component {
       const recipesWithoutTheRemovedRecipe = recipes
         .filter((item) => {
           if(item.key !== snapshot.key){
-            return item
+            return item;
+          }
+          else{
+            return false;
           }
       })
       this.setState({ 
@@ -73,90 +73,14 @@ class Recipes extends Component {
     this.setState({[event.target.name]: event.target.value});
   }
 
-  // Push new recipe to database
-  createNewRecipe = (event) => {
-    const recipe = {
-      name: this.state.nameInput,
-      author: "Camilla",
-      description: this.state.descriptionInput,
-      numberOfPeople: this.state.numberOfPeopleInput,
-      time: this.state.timeInput
-    }
-    firebase.database().ref('recipes')
-    .push(recipe)
-    .then(()=> { console.log('Pushed!') })
-    .catch(error => { console.log('You messed up', error) });
-  }
-
-  // Remove a recipe
-  removerecipe = (key) => {
-    firebase.database().ref(`recipes/${key}`).remove()
-    .then(()=> {console.log('Removed!')})
-    .catch(error => {console.log('You messed up', error)});
-  }
 
   render() {
 
     return (
-      <div className="Recipes" style={{width: "75%", margin: "1rem auto"}}>
-        
-        <h4>Add new recipe</h4>
-
-        <div className="pt-form-group">
-          <label className="pt-label" htmlFor="input">
-            Receptets namn 
-          </label>
-          <div className="pt-form-content">
-            <input value={this.state.nameInput} onChange={this.onChange} name="nameInput" className="pt-input pt-fill" type="text" dir="auto" />
-            <div className="pt-form-helper-text">Beskrivande såsom "Mustig höstgryta med kantareller"</div>
-          </div>
-        </div>
-
-        <div className="pt-form-group">
-          <label className="pt-label" htmlFor="input">
-            Beskrivning 
-          </label>
-          <div className="pt-form-content">
-            <textarea value={this.state.descriptionInput} name="descriptionInput" className="pt-input pt-fill" dir="auto"></textarea>
-            <div className="pt-form-helper-text">Skriv gärna personligt, t ex berätta om hur du kom på receptet eller var du fick inpiration. </div>
-          </div>
-        </div>
-
-
-        <div className="pt-control-group">
-          <label className="pt-label" htmlFor="input">
-            Antal personer
-          </label>
-          <div className="pt-input-group">
-            <span className="pt-icon pt-icon-time"></span>
-            <input value={this.state.numberOfPeopleInput} onChange={this.onChange} name="numberOfPeopleInput" className="pt-input pt-fill" type="number" dir="auto" />
-          </div>
-        </div>
-
-        <div className="pt-control-group">
-          <label className="pt-label" htmlFor="input">
-            Tidsåtgång (minuter)
-          </label>
-          <div className="pt-input-group">
-            <span className="pt-icon pt-icon-time"></span>
-            <input value={this.state.timeInput} onChange={this.onChange} name="timeInput" className="pt-input pt-fill" type="number" dir="auto" />
-          </div>
-        </div>
-
-
-        {/* Antal personer
-            Tidsåtgång
-            Bild
-            Tillagning (steg)
-            Iingredienser
-            Efterrätt/huvudrätt
-         */}
-
-
-
-        <button type="button" className="pt-button pt-icon-add pt-fill" onClick={() => this.createNewRecipe(this.state.input)} >Add</button>
-
-        
+      <div className="Recipes" style={{width: "100%", margin: "1rem auto"}}>
+ 
+        {/* <AddRecipeFromText user={this.props.user} onChange={this.onChange} /> */}
+        <AddRecipe user={this.props.user} onChange={this.onChange} />
 
 
       </div>

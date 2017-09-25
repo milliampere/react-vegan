@@ -23,7 +23,7 @@ class RegisterForm extends Component{
         firebase
         .database()
         .ref(`users`)
-        .push({email: user.email, uid: user.uid, name: this.state.name })
+        .push({email: user.email, uid: user.uid, displayName: this.state.name })
       })
       .then(()=> { console.log('Användare skapad!') })
       .catch(error => console.log(error));

@@ -3,7 +3,6 @@ import firebase from './firebase';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Recipes from './components/Recipes'; 
-import Ingredients from './components/Ingredients';
 import Profile from './components/Profile';
 import './App.css';
 /* import {
@@ -16,7 +15,10 @@ class App extends Component {
 
   state = {
     authenticated: false,
-    user: {}, 
+    user: {},
+    name: '', 
+    email: '',
+    userDB: {},
     pageToView: ''
   }
 
@@ -24,17 +26,26 @@ class App extends Component {
     firebase.auth()
     .onAuthStateChanged((user) =>{
       if(user){
-        this.setState({ user: user });
+        this.setState({user: user});
+
+        // Ta info från Facebook men också från Firebase?
+        const userInfo = {
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+          providerData: user.providerData
+        }
+
+        this.setState({userDB: userInfo});
+        this.setState({authenticated: true});
       }else{
-        //this.setState({ user: {}});
+        this.setState({ user: {}});
         this.setState({authenticated: false});
       }
-    })
-
-    
+    })  
   }
 
-  //Function gets called in LoginForm but state is being set in App
+  //Function gets called in LoginForm but state is being set in App   ?????? remove?
   onSignIn = (userFromLoginForm) => {
     this.setState({ user: userFromLoginForm })
     this.setState({authenticated: true});
@@ -64,17 +75,18 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar authenticated={this.state.authenticated} signOut={this.signOut} email={this.state.user.email} user={this.state.user} onNavbarClick={this.onNavbarClick} />
-        <main style={{maxWidth: "70%", margin: "3rem auto"}}>
-
-        {this.state.pageToView === "Lägg till recept" && <Recipes />}
-        {this.state.pageToView === "Favoriter" && <div><h2>Favoriter</h2></div>}
-
+        <main style={{maxWidth: "90%", margin: "3rem auto"}}>
         {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
+
+
+
+        {/* <Recipes user={this.state.user} /> */}
+        {this.state.pageToView === "Lägg till recept" && <Recipes user={this.state.user} />}
+        {this.state.pageToView === "Favoriter" && <div><h2>Favoriter</h2></div>}
 
         {this.state.pageToView === "Profile" && <Profile user={this.state.user} />}
 
 
-        <Ingredients />
 
 
         </main>

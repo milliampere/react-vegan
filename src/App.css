@@ -12,3 +12,37 @@
   /* animation: logo-spin 1s linear 2s infinite alternate; */
   height: 20px;
 }
+
+
+
+
+/*ADD RECIPE*/ 
+.addRecipeContainer{
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* IMAGE UPLOAD */
+
+
+.fileInput {
+  cursor: pointer;
+}
+
+.imgPreview img {
+    width: 100%;
+    height: 100%;
+  }
+.previewText {
+  width: 100%;
+  margin-top: 20px;
+  }
+
+
+.submitButton {
+  cursor: pointer;
+}
+
+
+/* ********************* */
