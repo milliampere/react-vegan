@@ -1,8 +1,7 @@
 import React, {Component} from "react";
-import PropTypes from 'prop-types';
 import ImageUpload from '../ImageUpload';
 import firebase from '../../firebase';
-import { NumericInput } from "@blueprintjs/core";
+//import { NumericInput } from "@blueprintjs/core";
 import Ingredients from '../ingredients/Ingredients';
 
 class AddRecipe extends Component {

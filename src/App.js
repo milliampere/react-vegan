@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Recipes from './components/Recipes'; 
 import Profile from './components/Profile';
 import './App.css';
+import AddRecipe from './components/recipes/add/AddRecipe';
 /* import {
   BrowserRouter as Router,
   Route,
@@ -80,7 +81,10 @@ class App extends Component {
 
 
 
-        {/* <Recipes user={this.state.user} /> */}
+        <AddRecipe user={this.state.user} />
+
+
+
         {this.state.pageToView === "Lägg till recept" && <Recipes user={this.state.user} />}
         {this.state.pageToView === "Favoriter" && <div><h2>Favoriter</h2></div>}
 

@@ -19,7 +19,7 @@ class Login extends Component{
     .then(result => this.setState({user: result.user}))
     .then((user) => {
       user = this.state.user;
-      (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user))
+      return (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));
     })
     .catch(error => {
       console.log(error.code, error.message);
@@ -51,8 +51,8 @@ class Login extends Component{
       }
     })
     .then(user => {
-      (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));
-      console.log(user);
+      return (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));
+      //console.log(user);
     });  
   }
 
@@ -66,7 +66,7 @@ class Login extends Component{
   doesUserExistInDatabase = () => {
     firebase.database().ref("users").once('value', (snapshot) => {
       const users = snapshot.val();
-      let key, value;
+      let value;
       for(let user in users){
         value = users[user];
         // If first time login or email is not in database

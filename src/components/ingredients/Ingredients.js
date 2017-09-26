@@ -73,7 +73,7 @@ class Ingredients extends Component {
     return (
       <div className="Ingredients">
         
-<DisplayChoosenIngredients ingredentsInput={this.state.ingredentsInput} removeInputIngredient={this.removeInputIngredient}/>
+    <DisplayChoosenIngredients ingredentsInput={this.state.ingredentsInput} removeInputIngredient={this.removeInputIngredient}/>
 
 
         <div className="pt-control-group">
