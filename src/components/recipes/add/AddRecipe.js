@@ -6,13 +6,14 @@ import Facts from './Facts';
 import Ingredients from './Ingredients';
 import Instructions from './Instructions';
 import firebase from '../../../firebase';
+import Button from './Button';
 
 
 class AddRecipe extends Component {
 
   state = {
     // Inputs
-    type: '',
+    type: 'food',
     name: '',
     description: '',
     prepareTime: '',
@@ -20,14 +21,31 @@ class AddRecipe extends Component {
     portions: '',
     ingredients: [{amount: 1, unit: '', comment: ''},{amount: 1, unit: '', comment: ''},{amount: 1, unit: '', comment: ''}],
     instructions: [{description: ''},{description: ''},{description: ''}],
+    
     //Image upload
     file: '',
-    imagePreviewUrl: ''
+    imagePreviewUrl: '',
+
+    // Recipe db
+    recipeKey: ''
+  }
+
+  componentDidMount() {
+
+/*    setTimeout(() => {
+      this.loadRecipe();
+    }, 3000); */
+    
+    this.previewDefaultImage(this.state.type);
   }
 
   // Get type for this.state.type from Type-component
   onClickType = (type) => {
       this.setState({type: type});
+
+      if(this.state.file.length < 1){
+        this.previewDefaultImage(type);
+      }
   }
 
   onClickAddIngredient = () => {
@@ -115,23 +133,109 @@ class AddRecipe extends Component {
     };
 
     // Upload file and metadata to the object 'recipe-images/"filename".jpg'
-    const uploadTask = firebase.storage().ref().child('recipe-images/' + filename).put(this.state.file, metadata);
+    //const uploadTask = 
+    firebase.storage().ref().child('recipe-images/' + filename).put(this.state.file, metadata);
   }
 
-  onClickDefaultImage = () => {
-
-    const defaultImageRef = firebase.storage().ref().child('default-images/food.jpg');
-
-    const defaultImageUrl = defaultImageRef.getDownloadURL().
-    then(url => {
-      return url
+  previewDefaultImage = (type) => {
+    let defaultImageRef;
+    if(type === 'pastry'){
+      defaultImageRef = firebase.storage().ref().child('default-images/pastry.jpg');
+    }else{
+      defaultImageRef = firebase.storage().ref().child('default-images/food.jpg');
+    }
+    
+    defaultImageRef.getDownloadURL()
+    .then(url => {
+      this.setState({imagePreviewUrl: url});
     }).catch(function(error) {console.log(error);});
-
-this.setState({imagePreviewUrl: defaultImageUrl});
   }
 
   // Generic on change for input fields
    onChange = (event) => {this.setState({[event.target.name]: event.target.value});
+  }
+
+  loadRecipe = () => {
+    console.log("Load recipe"); 
+    let latestRecipeKey, recipe;
+    const uid = this.props.user.uid;
+
+    firebase.database().ref('/users/' + uid).once('value').then((snapshot) => {
+      latestRecipeKey = (snapshot.val() && snapshot.val().latestRecipe.id) || null;
+      console.log("Latest recipe key:" + latestRecipeKey);
+    }).then(() => {
+      firebase.database().ref('/recipes/' + latestRecipeKey).once('value').then((snapshot) => {
+        recipe = (snapshot.val() || {name: "Hej"});
+        console.log("Latest recipe: " + recipe);
+        this.setState({name: recipe.name});
+      });
+    });
+
+    
+
+    
+          
+/*          this.setState({name: recipe.name});
+          this.setState({description: recipe.description});
+
+          this.setState({prepareTime: recipe.prepareTime});
+          this.setState({cookingTime: recipe.cookingTime});
+          this.setState({portions: recipe.portions});
+          this.setState({ingredients: recipe.ingredients});
+          this.setState({instructions: recipe.instructions});
+          this.setState({imagePreviewUrl: recipe.imagePreviewUrl});*/
+
+  }
+  
+
+  saveRecipe = () => {
+
+    console.log("Save recipe"); 
+    let recipeKey;
+    const uid = this.props.user.uid;
+
+      firebase.database().ref('/users/' + uid).once('value').then(function(snapshot) {
+        console.log(snapshot.val().latestRecipe);
+        //var latest = (snapshot.val() && snapshot.val().latestRecipe.id) || 'Anonymous';
+        // ...
+      });
+
+    if(!(this.state.recipeKey.length > 1)){
+      console.log("Recipe create");
+      recipeKey = firebase.database().ref().child('recipes').push().key;
+      this.setState({recipeKey : recipeKey});
+    }
+    else{
+      console.log("Recipe update");
+      recipeKey = this.state.recipeKey;
+    }
+
+    const recipe = {
+      author: uid,
+      type: this.state.type,
+      name: this.state.name,
+      description: this.state.description,
+      prepareTime: this.state.prepareTime,
+      cookingTime: this.state.cookingTime,
+      portions: this.state.portions,
+      ingredients: this.state.ingredients,
+      instructions: this.state.instructions,
+      imagePreviewUrl: this.state.imagePreviewUrl
+    };
+
+    const latestRecipe = {
+      id: recipeKey
+    }
+
+    // Write the recipe data simultaneously in the recipe list and the user's recipe list.
+    const updates = {};
+      updates['/recipes/' + recipeKey] = recipe;
+      updates['/users/' + uid + '/recipes'] = recipeKey;
+      updates['/users/' + uid + '/latestRecipe'] = latestRecipe;
+
+    return firebase.database().ref().update(updates);
+
+
   }
 
   render() {
@@ -139,12 +243,14 @@ this.setState({imagePreviewUrl: defaultImageUrl});
       <div className="AddRecipe">
         <Type onClick={this.onClickType} type={this.state.type} />
         <NameAndDescription onChange={this.onChange} name={this.state.name} description={this.state.description} />
-        <ImageUpload file={this.state.file} progress={this.state.progress} imagePreviewUrl={this.state.imagePreviewUrl} onImageChange={this.onImageChange} onClickDefaultImage={this.onClickDefaultImage}/>
+        <ImageUpload file={this.state.file} progress={this.state.progress} imagePreviewUrl={this.state.imagePreviewUrl} onImageChange={this.onImageChange} previewDefaultImage={this.previewDefaultImage} type={this.state.type} />
         <Facts onChange={this.onChange} prepareTime={this.state.prepareTime} cookingTime={this.state.cookingTime} portions={this.state.portions} />
         <Ingredients ingredients={this.state.ingredients} onChangeIngredient={this.onChangeIngredient} onClickAddIngredient={this.onClickAddIngredient} onClickRemoveIngredient={this.onClickRemoveIngredient} />
         <Instructions instructions={this.state.instructions} onChangeInstruction={this.onChangeInstruction} onClickAddInstruction={this.onClickAddInstruction} onClickRemoveInstruction={this.onClickRemoveInstruction} />
       
         <button className="pt-button submitButton" type="button" onClick={() => this.uploadImage()}>Ladda upp bild</button>
+
+        <Button onClick={this.saveRecipe} text="Spara recept" />
       </div>
     );
   }

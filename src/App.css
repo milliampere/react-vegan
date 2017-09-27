@@ -13,8 +13,10 @@
   height: 20px;
 }
 
-
-
+/*VIEW */
+.recipeCard {
+  width: 300px;
+}
 
 /*ADD RECIPE*/ 
 .addRecipeContainer{
@@ -30,6 +32,9 @@
 
 /* IMAGE UPLOAD */
 
+.imgPreview {
+ width: 50%;
+}
 
 .fileInput {
   cursor: pointer;

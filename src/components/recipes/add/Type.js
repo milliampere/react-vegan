@@ -8,7 +8,7 @@ const Type = props => {
     <div>
       <Heading title="Typ av recept" />
       <Button type="button" onClick={() => props.onClick("food")} text="Mat" className={(props.type === 'food') ? "pt-intent-primary" : ''} />
-      <Button type="button" onClick={() => props.onClick("bake")} text="Bakverk" className={(props.type === 'bake') ? "pt-intent-primary" : ''} />
+      <Button type="button" onClick={() => props.onClick("pastry")} text="Bakverk" className={(props.type === 'pastry') ? "pt-intent-primary" : ''} />
     </div>
   );
 };

@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import firebase from './firebase';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
-import Recipes from './components/Recipes'; 
+//import Recipes from './components/Recipes'; 
 import Profile from './components/Profile';
 import './App.css';
 import AddRecipe from './components/recipes/add/AddRecipe';
+import ViewRecipes from './components/recipes/view/ViewRecipes';
 /* import {
   BrowserRouter as Router,
   Route,
@@ -20,10 +21,14 @@ class App extends Component {
     name: '', 
     email: '',
     userDB: {},
-    pageToView: ''
+    pageToView: '',
+    recipes: []
   }
 
   componentDidMount(){
+
+
+
     firebase.auth()
     .onAuthStateChanged((user) =>{
       if(user){
@@ -44,6 +49,10 @@ class App extends Component {
         this.setState({authenticated: false});
       }
     })  
+
+
+
+
   }
 
   //Function gets called in LoginForm but state is being set in App   ?????? remove?
@@ -76,16 +85,16 @@ class App extends Component {
     return (
       <div className="App">
         <Navbar authenticated={this.state.authenticated} signOut={this.signOut} email={this.state.user.email} user={this.state.user} onNavbarClick={this.onNavbarClick} />
-        <main style={{maxWidth: "90%", margin: "3rem auto"}}>
+        <main style={{maxWidth: "70%", margin: "3rem auto"}}>
         {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
 
 
+        <ViewRecipes user={this.state.user} />
+        
 
-        <AddRecipe user={this.state.user} />
 
 
-
-        {this.state.pageToView === "Lägg till recept" && <Recipes user={this.state.user} />}
+        {this.state.pageToView === "Lägg till recept" && <AddRecipe user={this.state.user} />}
         {this.state.pageToView === "Favoriter" && <div><h2>Favoriter</h2></div>}
 
         {this.state.pageToView === "Profile" && <Profile user={this.state.user} />}
