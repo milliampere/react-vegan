@@ -9,7 +9,7 @@ function Filterbox(props){
         <p>Typ av rätt</p>
         <Checkbox checked={props.showFood} label="Maträtt" onChange={props.toggleFood} />
         <Checkbox checked={props.showPastry} label="Bakverk" onChange={props.togglePastry} />
-        <Button onClick={props.updateRecipes}>Filtrera</Button>
+        <Button onClick={props.filterRecipes}>Filtrera</Button>
       </div>
     </div>
   )
