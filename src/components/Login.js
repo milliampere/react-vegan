@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import firebase from '../firebase';
 import { Position, Intent, Toaster  } from "@blueprintjs/core";
 
-
 class Login extends Component{
 
   state = {
@@ -57,6 +56,8 @@ class Login extends Component{
     .then(user => {
       return (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));
       //console.log(user);
+      //Redirect
+      this.props.pageToView('home');
     });  
   }
 
@@ -118,7 +119,7 @@ class Login extends Component{
   }
 
   componentDidMount(){
-    this.props.onSignIn(this.state.user);
+    //this.props.onSignIn(this.state.user);
   }
 
 

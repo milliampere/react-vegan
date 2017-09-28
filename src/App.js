@@ -6,53 +6,44 @@ import Profile from './components/Profile';
 import './App.css';
 import AddRecipe from './components/recipes/add/AddRecipe';
 import FilterRecipes from './components/recipes/view/FilterRecipes';
-import {Spinner} from '@blueprintjs/core';
 
 class App extends Component {
 
   state = {
     authenticated: false,
     user: {},
-    userDB: {},
-    pageToView: 'home',
+    pageToView: 'home'
   }
 
   componentDidMount(){
 
     //Hämtar förändingar i auth (inloggning, utloggning) från Firebase
     firebase.auth().onAuthStateChanged((user) => {
-      if(user){
-        // Inloggad
+      if (user) {
         const userInfo = {
           displayName: user.displayName,
           email: user.email,
           photoUrl: user.photoURL,
-          uid = user.uid
-        }
-        this.setState({
-          authenticated: true,
-          user: userInfo
-        });
-      }else{
-        // Utloggad
-        this.setState({
-          authenticated: false,
-          user: {}
-        })  
+          uid: user.uid,
+          providerData: user.providerData
+        }        
+        this.setState({authenticated: true, user: userInfo});
+      } else {
+        this.setState({authenticated: false, user: {}});
       }
-    })  
-  }
+    });
 
-  //Function gets called in LoginForm but state is being set in App   ?????? remove?
-  onSignIn = (userFromLoginForm) => {
-    this.setState({ user: userFromLoginForm })
-    this.setState({authenticated: true});
+
+
+
+
   }
  
   // Sign out
   signOut = () => {
     firebase.auth().signOut().then(() => {
-      this.setState({pageToView: 'home'});
+      console.log(this.state.authenticated);
+      this.setState({pageToView: 'login'});
     })
     .catch(function(error) {
       console.log(error);
@@ -74,21 +65,20 @@ class App extends Component {
           user={this.state.user} 
           authenticated={this.state.authenticated} 
           pageToView={this.pageToView} 
-          signOut={this.signOut} 
-          email={this.state.user.email}  
-          onNavbarClick={this.onNavbarClick} 
+          signOut={this.signOut}  
+          onNavbarClick={this.onNavbarClick}  
         />
 
         <main style={{maxWidth: "100%", margin: "0 auto"}}>
-          {!(this.state.authenticated) && <Login onSignIn={this.onSignIn} />}
+          {/* {!(this.state.authenticated) && <Login onSignIn={this.onSignIn} />} */}
 {/*           {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
  */}
-          {authenticated && pageToView === "home" && <FilterRecipes user={this.state.user} />}
-          {pageToView === "add" && <AddRecipe user={this.state.user} /> }
-          {pageToView === "favorites" && <div><h2>Favoriter</h2></div>}
-          {pageToView === "profile" && <Profile user={this.state.user} />}
+          {pageToView === "home" && <FilterRecipes user={this.state.user} />}
+          {authenticated && pageToView === "add" && <AddRecipe user={this.state.user} /> }
+          {authenticated && pageToView === "favorites" && <div><h2>Favoriter</h2></div>}
+          {authenticated && pageToView === "profile" && <Profile user={this.state.user} />}
 
-          {pageToView === "login" && <Login onSignIn={this.onSignIn} />}
+          {pageToView === "login" && <Login onSignIn={this.onSignIn} user={this.state.user} pageToView={this.pageToView} />}
 
         </main>
       </div>
@@ -97,5 +87,4 @@ class App extends Component {
 }
 
 export default App;
-
 

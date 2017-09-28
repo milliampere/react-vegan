@@ -8,13 +8,17 @@ import Filterbox from './Filterbox';
 class FilterRecipes extends Component {
 
   state =  {
-    recipes: [], 
+    recipes: [],
+    allRecipes: [],
+    filteredRecipes: [], 
     showSingle: false, 
-    recipeId: '-Kv1n5jYKbyktYBEgIE4',
+    recipeId: '',
     filterBy: '',
-    input: '',
+    searchInput: '',
     onlyVegan: false,
-    recipeType: ''
+    recipeType: '',
+    showFood: true,
+    showPastry: true
   }
 
   componentDidMount() {
@@ -33,6 +37,8 @@ class FilterRecipes extends Component {
       recipes.push(recipe);
       //Update state
       this.setState({recipes:recipes});
+      this.setState({allRecipes:recipes});
+      this.setState({filteredRecipes:recipes});
     })
 
     // Listen for changes (child_removed)
@@ -53,6 +59,7 @@ class FilterRecipes extends Component {
       this.setState({ 
         recipes: recipesWithoutTheRemovedRecipe
       });
+      this.setState({allRecipes:recipes});
     })
 
     // Listen for changes (child_changed)
@@ -72,27 +79,150 @@ class FilterRecipes extends Component {
       this.setState({ 
         recipes: updatedRecipes
       });
+      this.setState({filteredRecipes:recipes});
     })
 
-  
-
 }
 
-showSingle = (id) => {
-  console.log("Showing single recipe");
-  this.setState({
-    showSingle: true, 
-    recipeId: id,
-  });
-}
+  // Update state on input change
+  onChange = (event) => { 
+    this.setState({ [event.target.name] : event.target.value }); 
+  }
 
-showAll = () => {
-  this.setState({
-    showSingle: false, 
-    recipeId: '',
-  });
-}
+  showSingle = (id) => {
+    console.log("Showing single recipe");
+    this.setState({
+      showSingle: true, 
+      recipeId: id,
+    });
+  }
 
+  showAll = () => {
+    this.setState({
+      showSingle: false, 
+      recipeId: '',
+    });
+  }
+
+  toggleFood = () => {
+    if(!this.state.showFood){
+      this.setState({showFood:true});
+    }
+    else {
+      this.setState({showFood:false});
+    }
+  }
+
+  togglePastry = () => {
+    if(!this.state.showPastry){
+      this.setState({showPastry:true});
+    }
+    else {
+      this.setState({showPastry:false});
+    }
+  }
+
+  getPastryRecipes = () => {
+    //Copy the state
+    const recipes = [...this.state.recipes];
+    // Filter
+    const pastryRecipes = this.state.recipes.filter((item) => {
+      return item.value.type === 'pastry';
+    })
+    //this.setState({pastryRecipes: pastryRecipes});
+    return pastryRecipes;
+  }
+
+  getFoodRecipes = () => {
+    //Copy the state
+    const recipes = [...this.state.recipes];
+    // Filter
+    const foodRecipes = this.state.recipes.filter((item) => {
+      return item.value.type === 'food';
+    })
+    //this.setState({foodRecipes: foodRecipes});
+    return foodRecipes;
+  }
+
+  updateRecipes = () => {
+    let recipesToSearch = [];
+    
+        if(this.state.showFood && this.state.showPastry){
+          console.log("Both");
+          recipesToSearch = this.state.recipes;
+        }
+        else if(this.state.showFood){
+          console.log("Fooood");
+          recipesToSearch = this.getFoodRecipes();
+        }
+        else if(this.state.showPastry){
+          console.log("Pastry");
+          recipesToSearch = this.getPastryRecipes();
+        };
+    this.setState({filteredRecipes: recipesToSearch});
+    return recipesToSearch;
+  }
+
+
+
+  searchByRecipeName = () => {
+    let recipesToSearch = [];
+
+
+
+    const filteredArray = recipesToSearch.filter((item) => {
+      return item.value.name.toLowerCase().indexOf(this.state.searchInput.toLowerCase()) > -1;
+    })
+    if(this.state.searchInput.length === 0){
+      const recipes = [...this.state.recipes];
+      this.setState({filteredRecipes: recipes});
+    } else if(filteredArray.length === 0){
+      console.log("Tomt");
+      this.setState({filteredRecipes: filteredArray});
+    } else {
+      this.setState({filteredRecipes: filteredArray});
+    }
+  }
+
+  filterByType = () => {
+
+    firebase.database().ref("recipes").orderByChild('value/type').once('value', (snapshot) => {
+      console.log(snapshot());
+    });
+
+    
+
+/*     const recipes = [...this.state.filteredRecipes];
+
+    const food = recipes.filter((item) => {
+      return item.value.type === 'food';
+    })
+
+    const pastry = recipes.filter((item) => {
+      return item.value.type === 'pastry';
+    })
+
+    if (this.state.showFood && this.state.showPastry) {
+
+      this.setState({filteredRecipes: recipes});
+    } else if (this.state.showFood){
+      this.setState({filteredRecipes: food});
+    } else if (this.state.showPastry){
+      this.setState({filteredRecipes: pastry});
+    } else {
+      this.setState({filteredRecipes: []});
+    } */
+  }
+
+  showState = () => {
+
+    this.updateRecipes();
+
+
+    console.log('showFood: ' + this.state.showFood);
+    console.log('showPastry: ' + this.state.showPastry);
+    console.log(this.state.filteredRecipes);
+  }
 
   render() {
 
@@ -104,7 +234,7 @@ showAll = () => {
             {/*Searchbar*/}
             <div className="pt-input-group pt-large">
               <span className="pt-icon pt-icon-search"></span>
-              <input className="pt-input" type="search" placeholder="Sök efter recept" dir="auto" />
+              <input className="pt-input" type="search" placeholder="Sök efter recept" dir="auto" name="searchInput" onChange={this.onChange} onKeyUp={this.searchByRecipeName} />
             </div>
             {/*End of Searchbar*/}
           </div>
@@ -114,7 +244,8 @@ showAll = () => {
         <div className="flex">
           <div className="sidebar">
             Filtrera
-            <Filterbox />
+            <Filterbox showFood={this.state.showFood} showPastry={this.state.showPastry} toggleFood={this.toggleFood} togglePastry={this.togglePastry} updateRecipes={this.updateRecipes} />
+            <button onClick={this.showState}>Show state</button>
           </div>
           <div className="main">
 
@@ -133,20 +264,15 @@ showAll = () => {
               {/*Recipes*/}
               {this.state.showSingle ? 
               <SingleRecipe recipes={this.state.recipes} recipeId={this.state.recipeId} user={this.props.user} showAll={this.showAll} /> 
-              : <RecipeCards recipes={this.state.recipes} user={this.props.user} showSingle={this.showSingle} /> }
+              : <RecipeCards recipes={this.state.filteredRecipes} user={this.props.user} showSingle={this.showSingle} /> }
               {/*End of Recipes */}
             </div>
           </div>
         </div>
 
-{/*        <Tabs2 id="Tabs2Example" onChange={this.handleTabChange}>
-            <Tab2 id="rx" title="Alla" panel={<RecipeCard recipes={this.state.recipes} user={this.props.user} onClick={this.showSingle} />} />
-            <Tab2 id="ng" title="En" panel={<SingleRecipe recipes={this.state.recipes} recipeId={this.state.recipeId} user={this.props.user} onClick={this.showAll} />} />
-            <Tabs2.Expander />
-            <input className="pt-input" type="text" placeholder="Search..." />
-        </Tabs2>  */}      
+   
         
-              </div>
+      </div>
     );
   }
 }
