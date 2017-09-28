@@ -1,6 +1,5 @@
 /* Fonts */
-@import url("https://fonts.googleapis.com/css?family=Quicksand");
-@import url("https://fonts.googleapis.com/css?family=PT+Serif|Playfair+Display");
+@import url("https://fonts.googleapis.com/css?family=Playfair+Display");
 /*
 font-family: 'Playfair Display', serif;
 font-family: 'Quicksand', sans-serif;
@@ -18,8 +17,7 @@ html, body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "Playfair Display", sans-serif;
-  line-height: 1.2 !important;
-  /*letter-spacing: 0.2rem;*/ }
+  line-height: 1.2 !important; }
 
 /* Components */
 .ingredientResult tbody tr:hover {
@@ -34,7 +32,10 @@ h1, h2, h3, h4, h5, h6 {
 
 .logo {
   /* animation: logo-spin 1s linear 2s infinite alternate; */
-  height: 20px; }
+  height: 18px; }
+
+.company {
+  cursor: pointer; }
 
 /* TEST */
 .pink {
@@ -85,7 +86,17 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 32%;
   width: 32%; }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
+  .recipeCard {
+    max-width: 99%;
+    width: 99%; } }
+
+@media (max-width: 900px) {
+  .recipeCard {
+    max-width: 49%;
+    width: 49%; } }
+
+@media (max-width: 500px) {
   .flex {
     display: block; }
   .sidebar {

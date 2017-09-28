@@ -6,7 +6,7 @@ function Navbar(props){
   return(
     <nav className="pt-navbar">
       <div className="pt-navbar-group pt-align-left">
-        <div className="pt-navbar-heading"><img src={logo} className="logo" alt="Vego" onClick={() => props.pageToView('home')} /></div>
+        <div className="pt-navbar-heading company" onClick={() => props.pageToView('home')}><img src={logo} className="logo" alt="Ego-Vego" /><h4 style={{display:"inline", margin: "5px"}}>Ego-vego</h4></div>
         {props.authenticated && 
           <div>
             <span className="pt-navbar-divider"></span>

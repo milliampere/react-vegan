@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase from '../firebase';
+import firebase from '../../firebase';
 import { Position, Intent, Toaster  } from "@blueprintjs/core";
 
 class Login extends Component{
@@ -16,7 +16,6 @@ class Login extends Component{
   
   // Authentication with Facebook
   authWithFacebook = () => {
-    console.log("Auth with Facebook");
     var provider = new firebase.auth.FacebookAuthProvider();
     firebase.auth().signInWithPopup(provider)
     .then(result => this.setState({user: result.user}))
@@ -31,11 +30,16 @@ class Login extends Component{
 
   // Authentication with email and password
   authWithEmailPassword = (event) => {
-    event.preventDefault();
-    console.log("Auth with email");    
+    event.preventDefault();   
     console.table([{email: this.state.email,password: this.state.password}])
 
     firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+    .then(user => {
+      return (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));})
+    .then(() => {
+      //Redirect
+      this.props.pageToView('home');
+    })
     .catch(error => {
       console.log(error.code, error.message)
       if(error.code === "auth/wrong-password"){
@@ -52,13 +56,7 @@ class Login extends Component{
       }else if(error.code === "auth/user-not-found"){
         this.signUp();
       }
-    })
-    .then(user => {
-      return (this.doesUserExistInDatabase(user) ? null : this.addUserToDatabase(user));
-      //console.log(user);
-      //Redirect
-      this.props.pageToView('home');
-    });  
+    }) 
   }
 
   // Create an authentication for a user with email and password, then add to database

@@ -8,7 +8,7 @@ function Profile(props) {
     var user = firebase.auth().currentUser;
     
     user.updateProfile({
-      displayName: "Camilla Tranberg",
+      displayName: "Anonym",
       photoURL: "http://simpleicon.com/wp-content/uploads/user1.png"
     }).then(function() {
       // Update successful.

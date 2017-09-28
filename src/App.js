@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import firebase from './firebase';
-import Login from './components/Login';
+import Login from './components/authentication/Login';
 import Navbar from './components/Navbar';
 import Profile from './components/Profile';
 import './App.css';
@@ -70,15 +70,13 @@ class App extends Component {
         />
 
         <main style={{maxWidth: "100%", margin: "0 auto"}}>
-          {/* {!(this.state.authenticated) && <Login onSignIn={this.onSignIn} />} */}
-{/*           {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
- */}
+
           {pageToView === "home" && <FilterRecipes user={this.state.user} />}
           {authenticated && pageToView === "add" && <AddRecipe user={this.state.user} /> }
           {authenticated && pageToView === "favorites" && <div><h2>Favoriter</h2></div>}
           {authenticated && pageToView === "profile" && <Profile user={this.state.user} />}
 
-          {pageToView === "login" && <Login onSignIn={this.onSignIn} user={this.state.user} pageToView={this.pageToView} />}
+          {!(authenticated) && pageToView === "login" && <Login onSignIn={this.onSignIn} user={this.state.user} pageToView={this.pageToView} />}
 
         </main>
       </div>
