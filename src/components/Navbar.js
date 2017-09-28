@@ -1,10 +1,5 @@
 import React from 'react';
 import firebase from '../firebase';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom';
 import Login from './Login';
 import logo from '../images/logo.svg';
 
@@ -35,20 +30,19 @@ function Navbar(props){
   return(
     <nav className="pt-navbar">
       <div className="pt-navbar-group pt-align-left">
-        <div className="pt-navbar-heading"><img src={logo} className="logo" alt="Vegan" /></div>
+        <div className="pt-navbar-heading"><img src={logo} className="logo" alt="Vegan" onClick={() => props.pageToView('home')} /></div>
         {props.authenticated && 
           <div>
             <span className="pt-navbar-divider"></span>
-            <button className="pt-button pt-minimal pt-icon-add-to-artifact" onClick={() => clickInNavbar("Lägg till recept")}>Lägg till recept</button>
-            <button className="pt-button pt-minimal pt-icon-document" onClick={() => clickInNavbar("Mina recept")}>Mina recept</button>
-            <button className="pt-button pt-minimal pt-icon-bookmark" onClick={() => clickInNavbar("Favoriter")}>Favoriter</button>
+            <button className="pt-button pt-minimal pt-icon-add-to-artifact" onClick={() => props.pageToView('add')}>Lägg till recept</button>
+            <button className="pt-button pt-minimal pt-icon-bookmark" onClick={() => props.pageToView('favorites')}>Favoriter</button>
           </div>
         }
       </div>
       <div className="pt-navbar-group pt-align-right">
         {props.authenticated
           ?  <div>
-        <button className="pt-button pt-minimal pt-icon-user" onClick={() => clickInNavbar("Profile")}></button>
+        <button className="pt-button pt-minimal pt-icon-user" onClick={() => props.pageToView('profile')}></button>
         <button className="pt-button pt-minimal pt-icon-notifications"></button>
         <button className="pt-button pt-minimal pt-icon-cog"></button>
         <span className="pt-navbar-divider"></span>
@@ -64,20 +58,10 @@ function Navbar(props){
         }
 
         {props.authenticated
-          ? <button onClick={signOut} className="pt-button pt-intent-primary"> Logga ut </button>
-          :  <Router>
-                <div>
-                  <Link to="/login">Login</Link>
-                  <Route path="/login" render={LoginRoute} />
-                  <button onClick={props.signIn} className="pt-button pt-intent-primary"> Registrera/Logga in </button>
-                </div>
-            </Router>
-          
+          ? <button onClick={props.signOut} className="pt-button pt-intent-primary">Logga ut</button>
+          : <button onClick={props.signIn} className="pt-button pt-intent-primary">Registrera/Logga in</button> 
         }
       </div>
-
-
-
 
     </nav>
 
@@ -86,21 +70,5 @@ function Navbar(props){
 export default Navbar;
 
 
-let signOut = () => {
-  firebase.auth().signOut().then(() => {
-  console.log("Sign-out successful.");
-  }).catch(function(error) {
-    // An error happened.
-  });
-} 
 
 
-
-
-const LoginRoute = (props) => {
-  return (
-    <Login {...props} 
-      onSignIn={this.onSignIn}
-    />
-  );
-}

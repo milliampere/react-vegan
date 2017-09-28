@@ -7,10 +7,14 @@ class Login extends Component{
 
   state = {
     email: '',
-    password: '', 
-    user: {}
+    password: ''
   }
 
+  // Update state on input change
+  onChange = (event) => { 
+    this.setState({ [event.target.name] : event.target.value }); 
+  }
+  
   // Authentication with Facebook
   authWithFacebook = () => {
     console.log("Auth with Facebook");
@@ -47,7 +51,7 @@ class Login extends Component{
               text: "Glömt lösenord?"
           } });
       }else if(error.code === "auth/user-not-found"){
-        this.createUserWithEmailPassword();
+        this.signUp();
       }
     })
     .then(user => {
@@ -57,7 +61,7 @@ class Login extends Component{
   }
 
   // Create an authentication for a user with email and password, then add to database
-  createUserWithEmailPassword = () => {
+  signUp = () => {
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
     .catch(error => console.log(error))
     .then(user => console.log(user))
@@ -117,7 +121,6 @@ class Login extends Component{
     this.props.onSignIn(this.state.user);
   }
 
-  onChange = (e) => { this.setState({ [e.target.name] : e.target.value }); }
 
   render(){
 

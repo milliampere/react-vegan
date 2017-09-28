@@ -13,7 +13,7 @@ registerServiceWorker();
 
 
 //Paste this at the bottom of your `index.js` in your `create-react-app`-project
-if (module.hot) {
+/*if (module.hot) {
   module.hot.accept('./App', () => {
     const NextApp = require('./App').default
     ReactDOM.render(
@@ -21,4 +21,4 @@ if (module.hot) {
       document.getElementById('root')
     )
   })
-}
+}*/

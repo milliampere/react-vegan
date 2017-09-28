@@ -2,57 +2,45 @@ import React, { Component } from 'react';
 import firebase from './firebase';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
-//import Recipes from './components/Recipes'; 
 import Profile from './components/Profile';
 import './App.css';
 import AddRecipe from './components/recipes/add/AddRecipe';
-import ViewRecipes from './components/recipes/view/ViewRecipes';
-/* import {
-  BrowserRouter as Router,
-  Route,
-  Link
-} from 'react-router-dom'; */
+import FilterRecipes from './components/recipes/view/FilterRecipes';
+import {Spinner} from '@blueprintjs/core';
 
 class App extends Component {
 
   state = {
     authenticated: false,
     user: {},
-    name: '', 
-    email: '',
     userDB: {},
-    pageToView: '',
-    recipes: []
+    pageToView: 'home',
   }
 
   componentDidMount(){
 
-
-
-    firebase.auth()
-    .onAuthStateChanged((user) =>{
+    //Hämtar förändingar i auth (inloggning, utloggning) från Firebase
+    firebase.auth().onAuthStateChanged((user) => {
       if(user){
-        this.setState({user: user});
-
-        // Ta info från Facebook men också från Firebase?
+        // Inloggad
         const userInfo = {
-          name: user.displayName,
+          displayName: user.displayName,
           email: user.email,
-          photo: user.photoURL,
-          providerData: user.providerData
+          photoUrl: user.photoURL,
+          uid = user.uid
         }
-
-        this.setState({userDB: userInfo});
-        this.setState({authenticated: true});
+        this.setState({
+          authenticated: true,
+          user: userInfo
+        });
       }else{
-        this.setState({ user: {}});
-        this.setState({authenticated: false});
+        // Utloggad
+        this.setState({
+          authenticated: false,
+          user: {}
+        })  
       }
     })  
-
-
-
-
   }
 
   //Function gets called in LoginForm but state is being set in App   ?????? remove?
@@ -61,49 +49,48 @@ class App extends Component {
     this.setState({authenticated: true});
   }
  
-  //Function gets called in Navbar but state is being set in App
-  onNavbarClick = (fromNavbar) => {
-    this.setState({ pageToView: fromNavbar })
+  // Sign out
+  signOut = () => {
+    firebase.auth().signOut().then(() => {
+      this.setState({pageToView: 'home'});
+    })
+    .catch(function(error) {
+      console.log(error);
+    })
+  } 
+
+  // Route to view page
+  pageToView = (page) => {
+    this.setState({pageToView: page});
   }
 
   render() {
 
-    // FOR TESTING
-/*     console.log("Render App.js");
-    if(firebase.auth().currentUser || !(Object.keys(this.state.user).length === 0)){
-        console.table([{
-          "App.js": '',
-          "firebase.auth().currentUser": firebase.auth().currentUser,
-          "this.state.user": this.state.user,
-          "authenticated": this.state.authenticated
-        }])
-    }
-    else{
-      console.log("Both firebase.auth().currentUser and this.state.user is empty");
-    } */
+    const {pageToView, authenticated} = this.state;
 
     return (
       <div className="App">
-        <Navbar authenticated={this.state.authenticated} signOut={this.signOut} email={this.state.user.email} user={this.state.user} onNavbarClick={this.onNavbarClick} />
-        <main style={{maxWidth: "70%", margin: "3rem auto"}}>
-        {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
+        <Navbar 
+          user={this.state.user} 
+          authenticated={this.state.authenticated} 
+          pageToView={this.pageToView} 
+          signOut={this.signOut} 
+          email={this.state.user.email}  
+          onNavbarClick={this.onNavbarClick} 
+        />
 
+        <main style={{maxWidth: "100%", margin: "0 auto"}}>
+          {!(this.state.authenticated) && <Login onSignIn={this.onSignIn} />}
+{/*           {(Object.keys(this.state.user).length === 0) && <Login onSignIn={this.onSignIn} />}
+ */}
+          {authenticated && pageToView === "home" && <FilterRecipes user={this.state.user} />}
+          {pageToView === "add" && <AddRecipe user={this.state.user} /> }
+          {pageToView === "favorites" && <div><h2>Favoriter</h2></div>}
+          {pageToView === "profile" && <Profile user={this.state.user} />}
 
-        <ViewRecipes user={this.state.user} />
-        
-
-
-
-        {this.state.pageToView === "Lägg till recept" && <AddRecipe user={this.state.user} />}
-        {this.state.pageToView === "Favoriter" && <div><h2>Favoriter</h2></div>}
-
-        {this.state.pageToView === "Profile" && <Profile user={this.state.user} />}
-
-
-
+          {pageToView === "login" && <Login onSignIn={this.onSignIn} />}
 
         </main>
-
       </div>
     );
   }
